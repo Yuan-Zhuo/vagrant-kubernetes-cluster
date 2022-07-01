@@ -2,7 +2,7 @@
 
 Kubernetes cluster automation via Vagrant
 
-# åPrerequisites
+# Prerequisites
 
 - virtualbox
   ```
@@ -39,10 +39,3 @@ Kubernetes cluster automation via Vagrant
   ```
   `kubectl apply -f /vagrant/nginx-deployment.yml && kubectl apply -f /vagrant/nginx-service.yml`
   ```
-
-To check your kubernetes cluster, you can create an nginx deployment and expose it (from port 30080) with
-
-
-After deployment you can check your page with
-
-`curl http://<worker-ip>:30080`
