@@ -1,31 +1,27 @@
 #!/bin/bash -e
-
-
 install_required_packages ()
 {
 sudo apt update
 sudo apt -y install curl apt-transport-https
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb http://mirrors.ustc.edu.cn/kubernetes/apt kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt update
 sudo apt -y install vim git curl wget kubelet=1.20.11-00 kubeadm=1.20.11-00 kubectl=1.20.11-00
 sudo apt-mark hold kubelet kubeadm kubectl
 }
-
 configure_hosts_file ()
 {
 sudo tee /etc/hosts<<EOF
-172.16.8.10 master
-172.16.8.11 node-01
+192.168.56.10 kube-master
+192.168.56.11 kube-node-01
+192.168.56.12 kube-node-02
 EOF
 }
-
 disable_swap () 
 {
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo swapoff -a
 }
-
 configure_sysctl ()
 {
 sudo modprobe overlay
@@ -37,7 +33,6 @@ net.ipv4.ip_forward = 1
 EOF
 sudo sysctl --system
 }
-
 install_docker_runtime () 
 {
 sudo apt update
@@ -57,14 +52,11 @@ sudo tee /etc/docker/daemon.json <<EOF
   "storage-driver": "overlay2"
 }
 EOF
-
 sudo systemctl daemon-reload 
 sudo systemctl restart docker
 sudo systemctl enable docker
-
 sed -i 's/plugins.cri.systemd_cgroup = false/plugins.cri.systemd_cgroup = true/' /etc/containerd/config.toml
 }
-
 install_required_packages
 configure_hosts_file
 disable_swap

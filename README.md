@@ -4,26 +4,38 @@ Kubernetes cluster automation via Vagrant
 
 # Prerequisites
 
-To create VMs with vagrant, you need to install:
-- Vagrant (This project is tested on Vagrant 2.2.7)
-- Virtualbox (This project is tested on Virtualbox 6.1.28)
+- virtualbox
+  ```
+  ## disable bios secure boot
+  sudo apt-get install linux-headers-`uname -r`
+  sudo apt-get install linux-headers-generic
+  sudo apt install virtualbox -y
+  wget https://download.virtualbox.org/virtualbox/6.1.34/Oracle_VM_VirtualBox_Extension_Pack-6.1.34.vbox-extpack
+  sudo VBoxManage extpack install
+  ```
+- vagrant
+  ```
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  sudo apt-get update && sudo apt-get install vagrant -y
+  vagrant plugin install vagrant-disksize
+  ```
 
 # Usage
 
-To create VMs and bootstrap your kubernetes cluster
+- bootstrap
 
-`vagrant up`
+  ```
+  vagrant up
+  ```
+- ssh into master
 
-After creation of VMs is complete ssh into master and check kubernetes cluster status
+```
+vagrant ssh kube-master
+kubectl get nodes
+```
 
-`vagrant ssh master`
-
-`kubectl get nodes`
-
-To check your kubernetes cluster, you can create an nginx deployment and expose it (from port 30080) with
-
-`kubectl apply -f /vagrant/nginx-deployment.yml && kubectl apply -f /vagrant/nginx-service.yml`
-
-After deployment you can check your page with 
-
-`curl http://<worker-ip>:30080`
+- deployment & service
+  ```
+  kubectl apply -f /vagrant/nginx-deployment.yml && kubectl apply -f /vagrant/nginx-service.yml
+  ```

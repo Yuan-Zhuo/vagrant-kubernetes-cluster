@@ -1,13 +1,12 @@
 #!/bin/bash -e
 
-master_node=172.16.8.10
+master_node=192.168.56.10
 pod_network_cidr=192.168.0.0/16
 
 initialize_master_node ()
 {
 sudo systemctl enable kubelet
-sudo kubeadm config images pull
-sudo kubeadm init --apiserver-advertise-address=$master_node --pod-network-cidr=$pod_network_cidr --ignore-preflight-errors=NumCPU
+sudo kubeadm init --apiserver-advertise-address=$master_node --pod-network-cidr=$pod_network_cidr --image-repository registry.aliyuncs.com/google_containers --ignore-preflight-errors=NumCPU
 }
 
 create_join_command ()
